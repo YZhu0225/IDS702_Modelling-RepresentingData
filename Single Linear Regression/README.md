@@ -1,7 +1,6 @@
 
-Data Analysis Assignment 1
+## Data Analysis Assignment 1
 
-IDS 702
 
 **DUE 11:55 PM Sept 16, 2022 Instructions**
 
