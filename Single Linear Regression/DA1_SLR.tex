@@ -1,0 +1,782 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Data Analysis Assignment 1},
+  pdfauthor={Yuanjing Zhu},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Data Analysis Assignment 1}
+\author{Yuanjing Zhu}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{respiratory-rates-for-children}{%
+\subsection{Respiratory rates for
+children}\label{respiratory-rates-for-children}}
+
+\textbf{a. Do exploratory analysis on the data and include a useful plot
+that a physician could use to assess a ``normal'' range of respiratory
+rates for children of any age between 0 and 3.}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-3-1} \end{center}
+
+\textbf{b. Write down a regression model for predicting respiratory
+rates from age. Make sure to use the right mathematical notation.}
+
+\[
+Respiratory~rate = \beta_0 + \beta_1 * Age + \epsilon_i; ~ \epsilon_i\sim N(0, \sigma^2),~i = 1,~...,~n
+\]
+
+\textbf{c.~Fit the model to the data. Include a table showing the output
+from the regression model including the estimated intercept, slope,
+residual standard error, and proportion of variation explained by the
+model.}
+
+\begin{table}[!h]
+
+\caption{\label{tab:unnamed-chunk-4}SLR Model Regressing respiratory rate on age}
+\centering
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X}
+\hline
+Predictor & Estimate & SE & t & p-value\\
+\hline
+Intercept & 47.0522 & 0.5042 & 93.3173 & <.001\\
+\hline
+Age & -0.6957 & 0.0294 & -23.6838 & <.001\\
+\hline
+\multicolumn{5}{l}{\textsuperscript{a} Multiple R-squared: 0.4766}\\
+\multicolumn{5}{l}{\textsuperscript{b} Adjusted R-squared: 0.4758}\\
+\end{tabu}
+\end{table}
+
+\textbackslash begin\{table\}{[}!h{]}
+
+\textbackslash caption\{\label{tab:unnamed-chunk-5}95\% Confidence
+Interval\} \centering
+
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X>{\raggedright}X}
+\hline
+Predictor & 2.5\% & 97.5\%\\
+\hline
+Intercept & 46.0620 & 48.0424\\
+\hline
+Age & -0.7534 & -0.6380\\
+\hline
+\end{tabu}
+
+\textbackslash end\{table\}
+
+\textbf{d.~Interpret your results. In the context of the problem, what
+do you conclude? Your interpretation should mention an appropriate
+p-value, 95\% confidence interval, and R2 value.}
+
+The p-value is pretty small(\textless{} 0.05), indicating that age is a
+significant predictor of respiratory rate at the \(\alpha = 0.05\)
+significance level.\\
+The respiratory rate is expected to decrease by 0.6957 when the value of
+age increases by one unit.\\
+The confidence interval of slope is {[}-0.75, -0.64{]} while that of
+intercept is {[}46.06, 48.04{]}. It means that if we repeatedly draw
+random samples of the same size to fit the same model, about 95\% of the
+time the confidence interval will capture the true value of these two
+coefficients.\\
+\(R^2\) value of this model is 0.4766, which means that 47.66\% of the
+variance for respiratory rate can explained by the age. So our model
+doesn't fit the data very well.
+
+\textbf{e. Is there enough evidence that the model assumptions are
+reasonable for this data? Include appropriate plots in your answer.}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-6-1} \end{center}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  The linearity assumption can be verified by Figure 1. It might be a
+  potential quadratic trend in the dataset, so we need to further check
+  the assumption.
+\item
+  The normality assumption can be checked in Figure 2. Most of the
+  points fall near the line of identity despite the fact that deviations
+  occur at the higher end of the line. Overall, there is no any type
+  like an S form, an exponential curve, so the normality assumption is
+  satisfied and the residuals follow a normal distribution.
+\item
+  The constant variance assumption can be checked in Figure3. If the
+  constant variance assumption is met, the spread of the points should
+  be constant across the whole window and the LOESS curve should be a
+  flat line. However, there seems to be more larger fitted values at the
+  right end and the LOESS curve is tilted. So we need to check for
+  potential violation further.
+\item
+  The independence assumption can also be checked in Figure 1. Because
+  there is no observable pattern in the plot, the independence
+  assumption seems plausible for this dataset.
+\end{enumerate}
+
+\newpage
+
+\hypertarget{airbnb-listing-for-seattle-wa}{%
+\subsection{Airbnb listing for Seattle,
+WA}\label{airbnb-listing-for-seattle-wa}}
+
+\textbf{a. Analyze the data by doing EDA, then model fitting, and model
+assessment. Consider transformations if needed.}
+
+\textbf{EDA}\\
+1. Distribution of price
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-8-1} \end{center}
+
+From the left histogram, we can see that the distribution of price is
+right-skewed. Most of the listing price is less than \$500 while only a
+few are more than \$500. So we consider using log transformation on
+price. The distribution of log(price) is shown in the right figure. It
+follows the bell curve.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  log(price) -- host\_is\_superhost
+\end{enumerate}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-9-1} \end{center}
+
+Average listing price is higher when host is not superhost. There are
+some outliers when the listing price is super high.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  log(price) -- host\_identity\_verified
+\end{enumerate}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-10-1} \end{center}
+
+Listing price tends to be higher when the host hasn't verified their
+identity with Airbnb.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  log(price) -- room\_type
+\end{enumerate}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-11-1} \end{center}
+
+Most of the rooms are entire home or apartment while some are private
+room. Only two are shared room. In general, the listing price is higher
+when the room type is entire home/apt.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  log(price) -- accommodates
+\end{enumerate}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-12-1} \end{center}
+
+The more people the room can accommodates, the higher the listing price
+in spite of some data points when the room can accommodate more than 12
+people.\\
+Concern: Some high-leverage points might affect model fitting.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  log(price) -- bathrooms
+\end{enumerate}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-13-1} \end{center}
+
+Most rooms have only one bathroom. The more bathroom a room has, the
+higher the listing price.\\
+Concern: Some high-leverage points might affect model fitting.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  log(price) -- bedrooms
+\end{enumerate}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-14-1} \end{center}
+
+Rooms with more bedrooms have higher listing price.\\
+Concern: Some high-leverage points might affect model fitting.
+
+\textbf{Model fitting}
+
+MLR: \begin{equation}
+\begin{split}
+log(price) = \beta_0 
+& + \beta_1 * host\_is\_superhost  \\
+& + \beta_2 * host\_identity\_verified  \\
+& + \beta_3 * room\_type  \\
+& + \beta_4 * accommodates  \\
+& + \beta_5 * bathrooms  \\
+& + \beta_6 * bedrooms \\
+& + \epsilon_i; ~ \epsilon_i\sim N(0, \sigma^2),~i = 1,~...,~n 
+\end{split}
+\end{equation}
+
+where host\_is\_superhost, host\_identity\_verified are dummy variables
+and accommodates, bathrooms and bedrooms are numeric variables.
+
+\textbf{Model assessment}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-16-1} \end{center}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-17-1} \end{center}
+
+\begin{table}[!h]
+
+\caption{\label{tab:unnamed-chunk-17}VIF values for each predictor}
+\centering
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X}
+\hline
+  & VIF\\
+\hline
+host\_is\_superhost & 1.0490\\
+\hline
+host\_identity\_verified & 1.0205\\
+\hline
+room\_type & 1.2100\\
+\hline
+accommodates & 4.7145\\
+\hline
+bathrooms & 2.8021\\
+\hline
+bedrooms & 5.3795\\
+\hline
+\end{tabu}
+\end{table}
+
+1. \textbf{Linearity}: Figure 1 is the plot of residuals vs fitted
+values. There is no discernable pattern so the linearity assumption is
+satisfied.\\
+2. \textbf{Independence of errors}: The scatter points in Figure 1 seem
+random, so the error terms are independent.\\
+3. \textbf{Equal variance of errors}: The LOESS curve in Figure 1 is
+primarily a flat line around zero, so heteroscedasticity assumption is
+met.\\
+4. \textbf{Normality of errors}: In Figure 2, most points are clustering
+around the 45° line, which implies normality assumption is not
+violated.\\
+5. \textbf{No multicollinearity}: From the last figure, we can see that
+the numeric variables: accommodates, bathrooms and bedrooms are
+correlated. That makes sense because the more bathrooms and bedrooms an
+apartment has, more people it can accommodate. Also the VIF of
+accommodates, bathrooms and bedrooms are relatively high. This could be
+problematic and need further inspection.
+
+\textbf{b. Include the output from the final regression model that you
+used, as well as evidence that the model fits the assumptions reasonably
+well. Your regression output should includes a table with coefficients
+and SEs, p-values, and confidence intervals.}
+
+\begin{table}[!h]
+
+\caption{\label{tab:unnamed-chunk-18}MLR Model Regressing listing price}
+\centering
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X}
+\hline
+Predictor & Estimate & SE & t & p-value\\
+\hline
+(Intercept) & 4.4299 & 0.0613 & 72.2604 & 0.0000\\
+\hline
+host\_is\_superhostTrue & -0.0087 & 0.0429 & -0.2036 & 0.8388\\
+\hline
+host\_identity\_verifiedTrue & -0.0968 & 0.0424 & -2.2832 & 0.0231\\
+\hline
+room\_typePrivate room & -0.4502 & 0.0626 & -7.1957 & 0.0000\\
+\hline
+room\_typeShared room & 0.2698 & 0.2632 & 1.0251 & 0.3061\\
+\hline
+accommodates & 0.0441 & 0.0141 & 3.1223 & 0.0020\\
+\hline
+bathrooms & 0.2111 & 0.0460 & 4.5861 & 0.0000\\
+\hline
+bedrooms & 0.1305 & 0.0371 & 3.5214 & 0.0005\\
+\hline
+\multicolumn{5}{l}{\textsuperscript{a} Multiple R-squared: 0.6682}\\
+\multicolumn{5}{l}{\textsuperscript{b} Adjusted R-squared: 0.6604}\\
+\end{tabu}
+\end{table}
+
+\textbackslash begin\{table\}{[}!h{]}
+
+\textbackslash caption\{\label{tab:unnamed-chunk-19}95\% Confidence
+Interval\} \centering
+
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X>{\raggedright}X}
+\hline
+  & 2.5 \% & 97.5 \%\\
+\hline
+(Intercept) & 4.3092 & 4.5505\\
+\hline
+host\_is\_superhostTrue & -0.0932 & 0.0758\\
+\hline
+host\_identity\_verifiedTrue & -0.1803 & -0.0134\\
+\hline
+room\_typePrivate room & -0.5734 & -0.3271\\
+\hline
+room\_typeShared room & -0.2482 & 0.7878\\
+\hline
+accommodates & 0.0163 & 0.0719\\
+\hline
+bathrooms & 0.1205 & 0.3017\\
+\hline
+bedrooms & 0.0576 & 0.2034\\
+\hline
+\end{tabu}
+
+\textbackslash end\{table\}
+
+\textbf{c.~Interpret the results of your fitted model in the context of
+the data.}\\
+1. For numeric variables, coefficient of each predictor represents the
+difference in log(Price) for each on-unit difference in the predictor
+when other predictors remain constant. For example, for bathrooms,
+\(\beta = 0.2111\), \(e^\beta = 1.235\), so a difference of one unit in
+bathroom will lead to about 23.5\% increase in listing price.\\
+2. For categorical variables, coefficient is the average difference in
+log(Price) between category. For example, the average difference in
+price is 9\% between host\_is\_superhostTrue and
+host\_is\_superhostFalse.\\
+3. p-value of each predictor shows that room\_typePrivate room,
+accommodates, bathrooms and bedrooms are significant.\\
+4. Adjucted \(R^2\) is 0.6604, which means that about 66.04\% of
+variation in the response variable can be explained by variation in the
+predictors.\\
+5. Overall p-value based on F-statistic is less than 0.05, indicating
+the model is significant.\\
+
+\textbf{d.~Are there any (potential) outliers, leverage points or
+influential points? Provide evidence to support your response. Also, if
+there are influential points and/or outliers, exclude the points, fit
+your model without them, and report the changes in your overall
+conclusions.}
+
+\begin{center}\includegraphics{DA1_resubmit_files/figure-latex/unnamed-chunk-20-1} \end{center}
+
+This graph displays a scatterplot of the standardized residuals vs a
+leverage indicator. It also shows a LOESS curve and contours for Cook's
+distances of 0.5 and 1. Two points (observation 31 and 138) fall outside
+the boundary of Cook's contours, so they are potentially influential
+points.\\
+
+Information of observation 31 and 138 is shown as follows:\\
+\textbackslash begin\{table\}{[}!h{]}
+
+\textbackslash caption\{\label{tab:unnamed-chunk-21}95\% Confidence
+Interval\} \centering
+
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X}
+\hline
+  & id & host\_is\_superhost & host\_identity\_verified & room\_type & accommodates & bathrooms & bedrooms & price\\
+\hline
+31 & 5143477 & False & True & Shared room & 2 & 1 & 1 & 500\\
+\hline
+138 & 20481127 & False & True & Shared room & 1 & 1 & 1 & 45\\
+\hline
+\end{tabu}
+
+\textbackslash end\{table\} They are the only two data points whose room
+type is shared room.\\
+After we exclude them, we fit the model again and here are the results:~
+
+\begin{table}[!h]
+
+\caption{\label{tab:unnamed-chunk-22}MLR Model without hight leverage points Regressing listing price}
+\centering
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright}X}
+\hline
+Predictor & Estimate & SE & t & p-value\\
+\hline
+(Intercept) & 4.4318 & 0.0592 & 74.8516 & 0.0000\\
+\hline
+host\_is\_superhostTrue & -0.0088 & 0.0415 & -0.2125 & 0.8319\\
+\hline
+host\_identity\_verifiedTrue & -0.0971 & 0.0410 & -2.3701 & 0.0184\\
+\hline
+room\_typePrivate room & -0.4526 & 0.0604 & -7.4896 & 0.0000\\
+\hline
+accommodates & 0.0423 & 0.0136 & 3.1024 & 0.0021\\
+\hline
+bathrooms & 0.2120 & 0.0445 & 4.7681 & 0.0000\\
+\hline
+bedrooms & 0.1337 & 0.0358 & 3.7351 & 0.0002\\
+\hline
+\multicolumn{5}{l}{\textsuperscript{a} Multiple R-squared: 0.6839}\\
+\multicolumn{5}{l}{\textsuperscript{b} Adjusted R-squared: 0.6775}\\
+\end{tabu}
+\end{table}
+
+The adjusted \(R^2\) increased to 0.6775 from the original 0.6604 and
+the F-statistic increased from 85.46 to 106.7, so removing the
+influential points can improve our model.
+
+\textbf{e. Overall, are there any potential limitations of this
+analysis? If yes, what are two potential limitations?} Potential
+limitations:\\
+1. There is multicollinearity among accommodates, bathrooms and
+bedrooms.\\
+2. We haven't taken quadratic terms or interaction terms into
+consideration.\\
+3. There may be other variables that will affect listing price.
+
+\newpage
+
+\hypertarget{code-appendix}{%
+\subsection{Code appendix}\label{code-appendix}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{h1, h4 \{}
+\NormalTok{  text}\SpecialCharTok{{-}}\NormalTok{align}\SpecialCharTok{:}\NormalTok{ center;}
+\NormalTok{\}}
+
+\NormalTok{knitr}\SpecialCharTok{::}\NormalTok{opts\_chunk}\SpecialCharTok{$}\FunctionTok{set}\NormalTok{(}\AttributeTok{warning =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{message =} \ConstantTok{FALSE}\NormalTok{) }
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(brew)}
+\FunctionTok{library}\NormalTok{(stargazer)}
+\FunctionTok{library}\NormalTok{(patchwork)}
+\FunctionTok{library}\NormalTok{(corrplot)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(broom)}
+\FunctionTok{library}\NormalTok{(car)}
+
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{\textquotesingle{}Respiratory.csv\textquotesingle{}}\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(df) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_point}\NormalTok{((}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Rate))) }\SpecialCharTok{+}
+    \FunctionTok{geom\_quantile}\NormalTok{(}\AttributeTok{quantiles =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.01}\NormalTok{, }\FloatTok{0.05}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.95}\NormalTok{, }\FloatTok{0.99}\NormalTok{), }
+                  \AttributeTok{size =} \DecValTok{1}\NormalTok{, }
+                  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Rate),}
+                  \AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{,}
+                  \AttributeTok{show\_legend =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{y =} \DecValTok{28}\NormalTok{, }\AttributeTok{label =} \StringTok{\textquotesingle{}1\%\textquotesingle{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{y =} \DecValTok{35}\NormalTok{, }\AttributeTok{label =} \StringTok{\textquotesingle{}5\%\textquotesingle{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{y =} \DecValTok{46}\NormalTok{, }\AttributeTok{label =} \StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{y =} \DecValTok{62}\NormalTok{, }\AttributeTok{label =} \StringTok{\textquotesingle{}95\%\textquotesingle{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{y =} \DecValTok{75}\NormalTok{, }\AttributeTok{label =} \StringTok{\textquotesingle{}99\%\textquotesingle{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Respiratory rate {-} Age"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{xlab}\NormalTok{(}\StringTok{"Age"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ylab}\NormalTok{(}\StringTok{"Respiratory rate"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+    \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.grid =} \FunctionTok{element\_blank}\NormalTok{())}
+\NormalTok{lm }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{Rate }\SpecialCharTok{\textasciitilde{}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{Age)}
+\NormalTok{lm }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{tidy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{p.value =} \FunctionTok{c}\NormalTok{(}\StringTok{"\textless{}.001"}\NormalTok{, }\StringTok{"\textless{}.001"}\NormalTok{), }\AttributeTok{term =} \FunctionTok{c}\NormalTok{(}\StringTok{"Intercept"}\NormalTok{, }\StringTok{"Age"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{(}\AttributeTok{caption =} \StringTok{"SLR Model Regressing respiratory rate on age"}\NormalTok{,}
+        \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+        \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Predictor"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{, }\StringTok{"SE"}\NormalTok{, }\StringTok{"t"}\NormalTok{, }\StringTok{"p{-}value"}\NormalTok{),}
+        \AttributeTok{digits =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{),}
+        \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_footnote}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Multiple R{-}squared: 0.4766"}\NormalTok{,}\StringTok{"Adjusted R{-}squared: 0.4758"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+\NormalTok{ci\_1 }\OtherTok{\textless{}{-}} \FunctionTok{confint}\NormalTok{(lm, }\AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\NormalTok{ci\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(ci\_1)}
+\FunctionTok{rownames}\NormalTok{(ci\_df) }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+\NormalTok{Predictor }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Intercept"}\NormalTok{, }\StringTok{"Age"}\NormalTok{)}
+\FunctionTok{cbind}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(Predictor), ci\_df) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{( }\AttributeTok{caption=}\StringTok{"95\% Confidence Interval"}\NormalTok{,}
+         \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+         \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Predictor"}\NormalTok{, }\StringTok{"2.5\%"}\NormalTok{, }\StringTok{"97.5\%"}\NormalTok{),}
+         \AttributeTok{digits =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{),}
+         \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(lm, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{23}\NormalTok{, }\DecValTok{31}\NormalTok{, }\StringTok{\textquotesingle{}Figure 1\textquotesingle{}}\NormalTok{, }\AttributeTok{cex =} \FloatTok{1.5}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(lm, }\AttributeTok{which =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{2.8}\NormalTok{, }\DecValTok{4}\NormalTok{, }\StringTok{\textquotesingle{}Figure 2\textquotesingle{}}\NormalTok{, }\AttributeTok{cex =} \FloatTok{1.5}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(lm, }\AttributeTok{which =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{23}\NormalTok{, }\FloatTok{1.9}\NormalTok{, }\StringTok{\textquotesingle{}Figure 3\textquotesingle{}}\NormalTok{, }\AttributeTok{cex =} \FloatTok{1.5}\NormalTok{)}
+
+\NormalTok{abb }\OtherTok{\textless{}{-}} \FunctionTok{read.table}\NormalTok{(}\StringTok{\textquotesingle{}Listings\_QueenAnne.txt\textquotesingle{}}\NormalTok{, }\AttributeTok{header =} \DecValTok{1}\NormalTok{, }\AttributeTok{stringsAsFactors =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{gg1 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(abb, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ price)) }\SpecialCharTok{+}
+      \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{bins =} \DecValTok{20}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Distribution of price"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{xlab}\NormalTok{(}\StringTok{"price"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{ylab}\NormalTok{(}\StringTok{"count"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+
+\NormalTok{gg2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(abb, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{log}\NormalTok{(price))) }\SpecialCharTok{+}
+      \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{bins =} \DecValTok{20}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Distribution of log(price)"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{xlab}\NormalTok{(}\StringTok{"log(price)"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{ylab}\NormalTok{(}\StringTok{"count"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+\NormalTok{gg1 }\SpecialCharTok{+}\NormalTok{ gg2}
+
+\DocumentationTok{\#\# host\_is\_superhost}
+\NormalTok{his\_p }\OtherTok{\textless{}{-}}\NormalTok{ abb }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(host\_is\_superhost, price) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(host\_is\_superhost) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_price =} \FunctionTok{round}\NormalTok{(}\FunctionTok{mean}\NormalTok{(price),}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{gg3 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ his\_p, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ host\_is\_superhost, }\AttributeTok{y =}\NormalTok{ mean\_price)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_col}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ host\_is\_superhost)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label=}\NormalTok{mean\_price, }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.2}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{\textquotesingle{}none\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{gg4 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ abb, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ host\_is\_superhost, }
+                              \AttributeTok{y =} \FunctionTok{log}\NormalTok{(price), }
+                              \AttributeTok{fill =}\NormalTok{ host\_is\_superhost)) }\SpecialCharTok{+} 
+            \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+            \FunctionTok{geom\_jitter}\NormalTok{(}\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.05}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+            \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{\textquotesingle{}none\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+            \FunctionTok{ylab}\NormalTok{(}\StringTok{"log(Price)"}\NormalTok{)}
+
+\NormalTok{gg3 }\SpecialCharTok{+}\NormalTok{ gg4}
+
+
+\DocumentationTok{\#\# host\_identity\_verified}
+\NormalTok{hiv\_p }\OtherTok{\textless{}{-}}\NormalTok{ abb }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(host\_identity\_verified, price) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(host\_identity\_verified) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_price =} \FunctionTok{round}\NormalTok{(}\FunctionTok{mean}\NormalTok{(price),}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{gg5 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ hiv\_p, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ host\_identity\_verified, }\AttributeTok{y =}\NormalTok{ mean\_price)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_col}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ host\_identity\_verified)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label=}\NormalTok{mean\_price, }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.2}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{\textquotesingle{}none\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{gg6 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ abb, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ host\_identity\_verified, }
+                          \AttributeTok{y =} \FunctionTok{log}\NormalTok{(price), }
+                          \AttributeTok{fill =}\NormalTok{ host\_identity\_verified)) }\SpecialCharTok{+} 
+            \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+            \FunctionTok{geom\_jitter}\NormalTok{(}\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.05}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+            \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{\textquotesingle{}none\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+            \FunctionTok{ylab}\NormalTok{(}\StringTok{"log(Price)"}\NormalTok{)}
+
+\NormalTok{gg5 }\SpecialCharTok{+}\NormalTok{ gg6}
+
+
+\DocumentationTok{\#\# room\_type}
+\NormalTok{rt\_p }\OtherTok{\textless{}{-}}\NormalTok{ abb }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(room\_type, price) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(room\_type) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_price =} \FunctionTok{round}\NormalTok{(}\FunctionTok{mean}\NormalTok{(price),}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{gg7 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ rt\_p, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ room\_type, }\AttributeTok{y =}\NormalTok{ mean\_price)) }\SpecialCharTok{+} 
+      \FunctionTok{geom\_col}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ room\_type)) }\SpecialCharTok{+}
+      \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label=}\NormalTok{mean\_price, }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.2}\NormalTok{)) }\SpecialCharTok{+}
+      \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
+  
+\NormalTok{gg8 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ abb, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ room\_type, }\AttributeTok{y =} \FunctionTok{log}\NormalTok{(price), }\AttributeTok{fill =}\NormalTok{ room\_type)) }\SpecialCharTok{+} 
+      \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+      \FunctionTok{geom\_jitter}\NormalTok{(}\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.05}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{"none"}\NormalTok{) }\SpecialCharTok{+}
+      \FunctionTok{ylab}\NormalTok{(}\StringTok{"log(Price)"}\NormalTok{)}
+
+\NormalTok{gg7 }\SpecialCharTok{+}\NormalTok{ gg8}
+
+\DocumentationTok{\#\# accommodates}
+
+\FunctionTok{ggplot}\NormalTok{(abb, }\FunctionTok{aes}\NormalTok{(accommodates, }\FunctionTok{log}\NormalTok{(price))) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_jitter}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{colour =}\NormalTok{ accommodates), }\AttributeTok{width =} \FloatTok{0.05}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
+
+\DocumentationTok{\#\# bathrooms}
+
+\FunctionTok{ggplot}\NormalTok{(abb, }\FunctionTok{aes}\NormalTok{(bathrooms, }\FunctionTok{log}\NormalTok{(price))) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_jitter}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{colour =}\NormalTok{ bathrooms), }\AttributeTok{width =} \FloatTok{0.05}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
+
+\DocumentationTok{\#\# bedrooms}
+
+\FunctionTok{ggplot}\NormalTok{(abb, }\FunctionTok{aes}\NormalTok{(bedrooms, }\FunctionTok{log}\NormalTok{(price))) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_jitter}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{colour =}\NormalTok{ bedrooms), }\AttributeTok{width =} \FloatTok{0.05}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
+
+\NormalTok{mlr }\OtherTok{=} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(price) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ host\_is\_superhost }\SpecialCharTok{+}\NormalTok{ host\_identity\_verified }\SpecialCharTok{+}\NormalTok{ room\_type }\SpecialCharTok{+}\NormalTok{ accommodates }\SpecialCharTok{+}\NormalTok{ bathrooms }\SpecialCharTok{+}\NormalTok{ bedrooms, }\AttributeTok{data =}\NormalTok{ abb)}
+
+\DocumentationTok{\#\# Model assessment}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(mlr, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{4.3}\NormalTok{, }\FloatTok{1.2}\NormalTok{, }\StringTok{\textquotesingle{}Figure 1\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mlr, }\AttributeTok{which =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{2.8}\NormalTok{, }\FloatTok{4.5}\NormalTok{, }\StringTok{\textquotesingle{}Figure 2\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mlr, }\AttributeTok{which =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{4.3}\NormalTok{, }\FloatTok{2.0}\NormalTok{, }\StringTok{\textquotesingle{}Figure 3\textquotesingle{}}\NormalTok{)}
+\NormalTok{dat }\OtherTok{\textless{}{-}}\NormalTok{ abb[, }\FunctionTok{c}\NormalTok{( }\StringTok{"accommodates"}\NormalTok{, }\StringTok{"bathrooms"}\NormalTok{,  }\StringTok{"bedrooms"}\NormalTok{)]}
+\FunctionTok{corrplot}\NormalTok{(}\FunctionTok{cor}\NormalTok{(dat), }\AttributeTok{method =} \StringTok{"number"}\NormalTok{, }\AttributeTok{type =} \StringTok{"upper"}\NormalTok{)}
+\FunctionTok{vif}\NormalTok{(mlr)[,}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable}\NormalTok{(}\AttributeTok{caption =} \StringTok{"VIF values for each predictor"}\NormalTok{,}
+        \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+        \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"VIF"}\NormalTok{),}
+        \AttributeTok{digits =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{),}
+        \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+\NormalTok{mlr }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{tidy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable}\NormalTok{(}\AttributeTok{caption =} \StringTok{"MLR Model Regressing listing price"}\NormalTok{,}
+        \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+        \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Predictor"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{, }\StringTok{"SE"}\NormalTok{, }\StringTok{"t"}\NormalTok{, }\StringTok{"p{-}value"}\NormalTok{),}
+        \AttributeTok{digits =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{),}
+        \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_footnote}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Multiple R{-}squared: 0.6682"}\NormalTok{,}\StringTok{"Adjusted R{-}squared: 0.6604"}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+\FunctionTok{confint}\NormalTok{(mlr, }\AttributeTok{level =} \FloatTok{0.95}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}  
+  \FunctionTok{kable}\NormalTok{(}\AttributeTok{caption=}\StringTok{"95\% Confidence Interval"}\NormalTok{,}
+         \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+         \AttributeTok{digits =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{),}
+         \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(mlr, }\AttributeTok{which =} \DecValTok{4}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mlr, }\AttributeTok{which =} \DecValTok{5}\NormalTok{)}
+\CommentTok{\#axis(1, c(0.0,0.1,0.2,0.3,0.4,0.5))}
+\NormalTok{cooksd }\OtherTok{\textless{}{-}} \FunctionTok{cooks.distance}\NormalTok{(mlr)}
+\CommentTok{\# find the high{-}leverage points}
+\NormalTok{influential }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{names}\NormalTok{(cooksd)[(cooksd }\SpecialCharTok{\textgreater{}} \DecValTok{4}\SpecialCharTok{*}\FunctionTok{mean}\NormalTok{(cooksd, }\AttributeTok{na.rm=}\NormalTok{T))])  }\CommentTok{\# influential row numbers}
+\FunctionTok{head}\NormalTok{(abb[influential, ]) }\SpecialCharTok{\%\textgreater{}\%}  
+  \FunctionTok{kable}\NormalTok{(}\AttributeTok{caption=}\StringTok{"95\% Confidence Interval"}\NormalTok{,}
+         \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+         \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+
+\NormalTok{abb2 }\OtherTok{\textless{}{-}}\NormalTok{ abb }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(id }\SpecialCharTok{!=} \DecValTok{5143477} \SpecialCharTok{\&}\NormalTok{ id }\SpecialCharTok{!=} \DecValTok{20481127}\NormalTok{)  }\CommentTok{\# remove high leverage point}
+\CommentTok{\# fit model}
+\NormalTok{mlr2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(price) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ host\_is\_superhost }\SpecialCharTok{+}\NormalTok{ host\_identity\_verified }\SpecialCharTok{+}\NormalTok{ room\_type }\SpecialCharTok{+}\NormalTok{ accommodates }\SpecialCharTok{+}\NormalTok{ bathrooms }\SpecialCharTok{+}\NormalTok{ bedrooms, }\AttributeTok{data =}\NormalTok{ abb2)}
+\NormalTok{mlr2 }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{tidy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable}\NormalTok{(}\AttributeTok{caption =} \StringTok{"MLR Model without hight leverage points Regressing listing price"}\NormalTok{,}
+        \AttributeTok{format=}\StringTok{"latex"}\NormalTok{,}
+        \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Predictor"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{, }\StringTok{"SE"}\NormalTok{, }\StringTok{"t"}\NormalTok{, }\StringTok{"p{-}value"}\NormalTok{),}
+        \AttributeTok{digits =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{),}
+        \AttributeTok{align =} \StringTok{"l"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_footnote}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Multiple R{-}squared: 0.6839"}\NormalTok{,}\StringTok{"Adjusted R{-}squared: 0.6775"}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{position=}\StringTok{"center"}\NormalTok{,}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{), }\AttributeTok{full\_width =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}
