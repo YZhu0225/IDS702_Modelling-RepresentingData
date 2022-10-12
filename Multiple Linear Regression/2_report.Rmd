@@ -1,0 +1,515 @@
+---
+title: "Data Analysis Assignment 2"
+author: "Yuanjing Zhu"
+date: "10/05/2022"
+---
+
+<style type="text/css">
+h1.title {
+  font-size: 16pt;
+}
+
+h3 { /* Header 3 */
+  font-size: 14pt;
+  color: DarkBlue;
+}
+
+body{
+font-size: 11pt;
+}
+</style>
+
+```{css, echo=FALSE}
+h1, h4 {
+  text-align: center;
+}
+```
+\pagenumbering{roman}
+
+```{r setup, include=FALSE} 
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r echo = FALSE, message = FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(brew)
+library(stargazer)
+library(patchwork)
+library(corrplot)
+library(caret)
+library(kableExtra)
+library(broom)
+library(car)
+library(leaps)
+library(MASS)
+```
+
+
+
+### Question 1: Old Faithful Geyser in Yellowstone National Park
+
+**EDA**
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+# Data
+oldfaithful <- read.csv('OldFaithful.csv', header = 1, stringsAsFactors = TRUE)
+dim(oldfaithful)
+head(oldfaithful)
+summary(oldfaithful)
+str(oldfaithful)
+```
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 4, fig.align = 'center'}
+# EDA
+# Distribution of Interval
+gg1 <- ggplot(oldfaithful, aes(x = Interval)) +
+  geom_histogram(aes(y=..density..), color = "black", bins = 20, fill = rainbow(20)) +
+  geom_density(alpha = 0.2, size = 1, linetype = "dashed", fill = "lightblue") +
+  scale_fill_brewer(palette = "Blues") +
+  labs(title = "Distribution of Interval") +
+  theme_classic() + theme(legend.position = "none")
+
+# Interval -- Duration
+gg2 <- ggplot(oldfaithful, aes(x = Duration, y = Interval)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method  = "lm", color = "red") +
+  theme_classic() +
+  labs(title = "Interval -- Duration", x = "Duration", y = "Interval")
+
+gg1 + gg2
+```
+The histogram of Interval shows that it is not normally distributed, which may cause problem later. From the plot of interval and duration on the right, we can see potential linear relationship between them. 
+
+**Model Fit**
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+
+# Model Fit
+lm_oldf_1 <- lm(Interval~Duration, data = oldfaithful)
+summary(lm_oldf_1)
+```
+
+```{r echo = FALSE, message = FALSE, fig.align = 'center'}
+lm_oldf_1 %>%
+  tidy() %>% 
+  # mutate(p.value = c("<.001", "<.001"), term = c("Intercept", "Duration")) %>%
+  kable(caption = "<center>SLR Model Regressing Duration on Interval<center>",
+        bookstabs = T,
+        col.names = c("Predictor", "Estimate", "SE", "t", "p-value"),
+        digits = c(2, 2, 2, 2, 2),
+        align = "l") %>% 
+  add_footnote(c("Multiple R-squared: 0.7369, Adjusted R-squared: 0.7344")) %>% 
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+```
+```{r echo = FALSE, message = FALSE, fig.align = 'center'}
+ci_oldf_i <- confint(lm_oldf_1, level = 0.95)
+ci_oldf_i1_df <- data.frame(ci_oldf_i)
+rownames(ci_oldf_i1_df) <- NULL
+Predictor <- c("Intercept", "Duration")
+cbind(data.frame(Predictor), ci_oldf_i1_df) %>%
+  kable( caption="<center>95% Confidence Interval</center>",
+         bookstabs = T,
+         col.names = c("Predictor", "2.5%", "97.5%"),
+         digits = c(2, 2),
+         align = "l") %>%
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+
+```
+1. p-value is extremely small at the $alpha = 0.05$ significance level, indicating strong evidence that duration is significant in determining interval.\
+2. The fitted linear regression model can be written as: $Interval = 33.83 + 10.74 * Duration +  \epsilon_i$. Interval between eruptions will increase 10.74 minutes as the duration of the previous interval increases by one unit.\
+3. $R^2$ value is around 0.74, which means that 74% of the variance for interval between eruptions can be explained by the duration of the previous one\
+4. The 95% confidence interval of Duration is (9.50, 11.98), which means that we are 95% confidence that the true value of the slop will be in this range. 
+
+
+**Model Assessment**
+
+```{r echo = FALSE, message = FALSE, fig.show='hide'}
+plot(lm_oldf_1, which = 1)
+plot(lm_oldf_1, which = 2)
+plot(lm_oldf_1, which = 3)
+plot(lm_oldf_1, which = 4)
+plot(lm_oldf_1, which = 5)
+plot(1:dim(oldfaithful)[1], lm_oldf_1$residuals, main = "Residuals vs [1:n]", cex.main = 1.2)
+
+```
+
+1. From the residuals vs fitted plot, we can see two clusters. If this is caused by lack of data in the middle, then linearity holds, but if not, then linear assumption is violated. So we need to check it later for potential violation. 
+2. The independence assumption is satisfied for this dataset since there is no discernible pattern in the residual plot. 
+3. The normality assumption holds because most points fall near the 45° line in the qq plot.
+4. For constant variance assumption, there are still two clusters on the left and right side of the plot, and the LOESS curve is not a flat line. It may be because of less data in the middle, but we need to check it later for potential violation.
+
+
+**Predicting interval from duration and day**
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+oldfaithful$date_fac <- factor(oldfaithful$Date)
+lm_oldf_2 <- lm(Interval ~ Duration + date_fac, data = oldfaithful)
+summary(lm_oldf_2)
+```
+
+```{r echo = FALSE, message = FALSE, fig.align = 'center'}
+lm_oldf_2 %>%
+  tidy() %>% 
+  # mutate(p.value = c("<.001", "<.001"), term = c("Intercept", "Duration")) %>%
+  kable(caption = "<center>SLR Model Regressing Duration on Interval<center>",
+        bookstabs = T,
+        col.names = c("Predictor", "Estimate", "SE", "t", "p-value"),
+        digits = c(2, 2, 2, 2, 2),
+        align = "l") %>% 
+  add_footnote(c("Multiple R-squared: 0.7408, Adjusted R-squared: 0.7196")) %>% 
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+```
+In this multilinear regression model, the baseline of date is $date = 1$, but date doesn't seem to be significant since p-values for all date variables are larger than 0.4.
+
+
+**k-fold cross validation (with k=10)**
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+# set seed to generate reproducible random sampling
+set.seed(12)
+
+# define training control and set the value of k = 10
+train_oldf <- trainControl(method = "cv", number = 10)
+
+# train the dataset
+cv_lm <- train(Interval ~ Duration, 
+               data = oldfaithful, 
+               method = "lm", 
+               trControl = train_oldf)
+summary(cv_lm)
+print(cv_lm)
+
+# RMSE of the last model
+sqrt(mean(lm_oldf_1$residuals^2))
+
+```
+
+```{r echo = FALSE, message = FALSE}
+# convert to table
+cbind(data.frame(c(6.6099)), data.frame(c(6.6199))) %>%
+  kable( caption="<center>RMSE for regressing Interval on Duration<center>",
+         bookstabs = T,
+         col.names = c("SLR with 10-fold cv", "SLR"),
+         digits = c(2, 2),
+         align = "l") %>%
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+```
+With random seed as 12, RMSE after 10 fold cross validation is 6.61 while the RMSE of the previous linear regression model is 6.62. The model with cross validation has a smaller RMSE thus is slightly more accurate than the previous one, but the difference between the two models is not very not huge.  
+
+
+
+
+
+\newpage
+### Question 2: Maternal smoking and birth rate
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+smoking_raw <- read.csv("smoking.csv", header = 1, stringsAsFactors = TRUE)
+dim(smoking_raw)
+head(smoking_raw)
+summary(smoking_raw)
+str(smoking_raw)
+sum(is.na(smoking_raw))
+```
+
+##### **Summary**
+
+In this project, I built a multi-linear regression model to investigate what characteristics will affect baby's birth weight. I started with data pre-processing and exploratory data analysis, where I found that mom smoking will have a negative impact on birth weight and birth weight varies among different race groups, mom's height and pre-pregnancy weight. There are also association between smoking and birth weight differs by mother’s race. Then I applied backward model selection using AIC as criterion and performed F tests to evaluate the significance of interaction terms. Our final model aligns with what we inferred from EDA, indicating that smoking mothers tend to give birth to babies with lower weights. The predictors in our final model include smoking, race, height, pre-pregnancy weight and the interaction term of smoking and race.
+<br>
+
+
+##### **Introduction**
+
+In this data analysis, we used a subset of the dataset from a research study of all babies born between 1960 and 1967 at the Kaiser Foundation Hospital in Oakland, CA. The objective of this research is to investigate whether there is an association between mom smoking and birth weight: Do smoking mothers have a tendency to have babies with lower birth weight than non-smoking mothers? What is the likely range of the weight difference between smoking and non-smoking mothers? We are also interested to know whether babies' birth weight is related to other socioeconomic and demographic characteristics of their mother, including race, total number of previous pregnancies, age, education, height, and weight before pregnancy.
+<br>
+
+
+##### **Data**
+
+**Pre-processing**
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+# Convert numeric value to categorical value
+## smoke
+smoking <- smoking_raw
+smoking$smoke_fac <- factor(smoking$smoke,
+                            levels = c("0", "1"),
+                            labels = c("non_smoker", "smoker"))
+## mrace
+### (<5], (5,6], (6,7], (7,8], (8,9], (9,99]
+smoking$mrace_fac <- cut(smoking$mrace, breaks=c(-Inf,5,6,7,8,9,Inf),
+                        labels = c("5", "6", "7", "8", "9", "99"))
+## income
+smoking$inc_fac <- factor(smoking$inc)
+
+## parity
+smoking$parity_fac <- factor(smoking$parity)
+
+# remove 3 variables
+smoking <- subset(smoking, select=-c(id, date, gestation)) 
+
+head(smoking)
+summary(smoking)
+str(smoking)
+```
+The data prep-processing contains three steps: check missing values, convert and collapse categorical variables and remove variables that will not be used in later analysis.\
+1. There are no missing values in this subset of dataset.\
+2. We consider mother's smoke, race, income and total number of previous pregnancies as categorical variables, so we convert them from integer to factors. Additionally, mrace has originally 11 distinct values, we collapse it into 6 categories, to 0-5: white, 6: mexican, 7: black, 8: asian, 9: mix and 99: unknown.\
+3. We do not have to use Id and birth in our model, and gestation is another outcome variable like birth weight, so we remove these 3 variables.
+
+
+**Exploratory Data Analysis**
+
+Then we performed exploratory data analysis to better understand data set variables and the relationship among them before making any assumptions. Table 1 is included in the appendix due to the page limit. 
+
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 4.5, fig.align = 'center'}
+
+# Distribution of birth weight
+gg3 <- ggplot(smoking, aes(x = bwt.oz)) +
+  geom_histogram(aes(y=..density..), color = "black", bins = 20, fill = rainbow(20)) +
+  geom_density(alpha = 0.2, size = 1, linetype = "dashed", fill = "lightblue") +
+  scale_fill_brewer(palette = "Blues") +
+  labs(title = "Distribution of birth weight") +
+  theme_classic() + theme(legend.position = "none")
+
+## birth weight -- smoke
+gg4 <- ggplot(smoking, aes(x = smoke_fac, y = bwt.oz, fill = smoke_fac)) +
+  geom_boxplot() + 
+  geom_point(alpha = 0.2, color = "blue") +
+  scale_fill_brewer(palette = "Blues") +
+  #scale_fill_discrete(labels = c("non_smoker", "smoker")) +
+  theme_classic() +
+  labs(title = "Birth weight -- mom smoke", x = "mom smoke", y = "Birth weight(oz)") +
+  theme(legend.position = 'none')
+
+gg3 + gg4
+
+```
+
+From the histogram of the birth weight, we can see that our response variable is normally distributed.
+Since we were primarily interested in whether smoking is associated with birth weight, we plotted a boxplot of birth weight vs mom smoking. It gives us an intuition that mother smoking tend to have a negative impact on baby's birth weight. From calculation, the average birth weight from non-smoking mother is 122.54 oz while that from smoking mother is 113.53 oz, which confirms the result from the boxplot.
+<br>
+After plotting response variable and each predictor, we found that baby's birth weight is also potentially associated with mom's race, height, pre-pregnancy weight, and total number of previous pregnancies
+<br>
+In order to explore the effect of interaction terms on birth weight, we plotted response variable vs two predictors using *facet_wrap* in ggplot. It turned out there exist two potential significant interaction terms: $smoke*mrace$ and $smoke*parity$. \
+Since we are primarily interested in the association between smoking and birth weight differs by mother’s race, I did some calculations about the average birth weight among different race groups. From table 1, nearly 90% of the interviewees are white and black, and 53.6% of them are smokers. It also turned out that the average birth weight for black and asian mothers is 113.20 oz and 109.44 oz respectively, which is much lower than white mothers(120.00 oz). In addition, compared with smoker and non-smoker within the same race, asian and mix mothers tend to have lighter-weight babies when they are smokers. \
+For parity, the right figure shows that smoking mothers who have experienced more previous pregnancies are likely to have lower birth weight babies. 
+
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 4.5, fig.align = 'center'}
+# interaction terms
+
+## smoke_fac -- mrace_fac
+gg5 <- ggplot(smoking,aes(x=smoke_fac, y=bwt.oz, fill=smoke_fac)) +
+  geom_boxplot() + #coord_flip() +
+  scale_fill_brewer(palette="Blues") +
+  labs(title="Birth weight vs mom smoke by race",x="mom smoke",y="Birth weight") + 
+  theme_classic() + theme(legend.position="none", axis.text.x=element_blank()) +
+  facet_wrap( ~ mrace_fac,ncol=6)
+
+## smoke_fac -- parity
+gg6 <- ggplot(smoking,aes(x=smoke_fac, y=bwt.oz, fill=smoke_fac)) +
+  geom_boxplot() + #coord_flip() +
+  scale_fill_brewer(palette="Blues") +
+  labs(title="Birth weight vs mom smoke by parity",x="mom smoke",y="Birth weight") + 
+  theme_classic() + theme(legend.position="none", axis.text.x=element_blank()) +
+  facet_wrap( ~ parity_fac, ncol=12)
+ 
+gg5 + gg6
+```
+
+
+
+##### **Models**
+
+**Model Selection**
+
+Firstly, I started with a baseline MLR model without interaction terms based on the previous EDA. The model can be written as: $$bwt.oz = \beta_0 +\beta_1 * smoke + \beta_2*mrace + \beta_3*parity + \beta_4*mht + \beta_5*mpregwt + \epsilon_i;$$
+The adjucted $R^2$ is 0.1528, which means that only about 15.28% of variation in the response variable can be explained by variation in the predictors. P-value for individual predictor indicates that smoke, mrace, mht and mpregwt are highly significant with $p-value < 0.001$ while parity doesn't seem to be significant. The overall p-value based on F-statistic is less than 0.05, indicating that this model is significant.\
+
+Then I applied backward selection using AIC as criterion because backward selection is the most poular method and AIC is the more preferred criterion. From the backward selection using AIC, the result aligns with the baseline MLR model. Using 4 predictors: smoke, mrace, mht, mpregwt brings lowest AIC value. 
+
+```{r echo = FALSE, message = FALSE, include = FALSE}
+# baseline
+mlr_smoking_2 <- lm(bwt.oz ~ smoke_fac + mrace_fac  + mht + mpregwt + parity_fac, data = smoking)
+summary(mlr_smoking_2)
+
+# backward selection
+mod <- lm(bwt.oz~.,data=smoking)
+mod.back <- stepAIC(mod,direction="backward")
+summary(mod.back)
+```
+
+
+Based on EDA, we also want to explore whether there is relationship between birth weight and interaction terms: $smoke*mrace$ and $smoke*parity$. Here I conducted F test on two pairs of models\
+Pair1: $$bwt.oz \sim smoke + mrace + mht + mpregwt$$
+       $$bwt.oz \sim smoke + mrace + mht + mpregwt + smoke:mrace$$
+Pair2: $$bwt.oz \sim smoke + mrace  + mht + mpregwt + parity$$ 
+       $$bwt.oz \sim smoke + mrace + mht + mpregwt + parity + smoke:parity$$
+The p-value of F test for both pairs are larger than 0.1, indicating the interaction terms are not significant. However, since we consider $smoke : race$ vital prior to modeling using our domain knowledge, we will keep this term while dropping $smoke:parity$
+
+```{r echo = FALSE, message = FALSE,  include = FALSE}
+# use F-TEST to see whether include interaction term or not
+
+mlr_smoking_no_inter1 <- lm(bwt.oz ~ smoke_fac + mrace_fac  + mht + mpregwt, data = smoking)
+mlr_smoking__inter1 <- lm(bwt.oz ~ smoke_fac + mrace_fac + mht + mpregwt + smoke_fac : mrace_fac, data = smoking)
+
+anova(mlr_smoking_no_inter1, mlr_smoking__inter1)
+
+mlr_smoking_no_inter2 <- lm(bwt.oz ~ smoke_fac + mrace_fac  + mht + mpregwt + parity_fac, data = smoking)
+mlr_smoking__inter2 <- lm(bwt.oz ~ smoke_fac + mrace_fac + mht + mpregwt + parity_fac + smoke_fac : parity_fac, data = smoking)
+
+anova(mlr_smoking_no_inter2, mlr_smoking__inter2)
+
+## p-value > 0.19, so the interaction term is not significant
+```
+
+**Final Model Interpretations**
+```{r echo = FALSE, message = FALSE, include = FALSE}
+mlr_smoking_final <- lm(bwt.oz ~ smoke_fac + mrace_fac  + mht + mpregwt + smoke_fac:mrace_fac, data = smoking)
+summary(mlr_smoking_final)
+```
+
+```{r,echo = FALSE, message = FALSE, fig.align='center'}
+mlr_smoking_final %>%
+  tidy() %>% 
+  kable(caption = "MLR Model Regressing birth weight",
+        col.names = c("Predictor", "Estimate", "SE", "t", "p-value"),
+        digits = c(2, 2, 2, 2, 2),
+        align = "l") %>% 
+  add_footnote(c("Multiple R-squared: 0.1530","Adjusted R-squared: 0.1421"))%>% 
+  kable_styling(position="center", full_width = T)
+```
+```{r,echo = FALSE, message = FALSE, fig.align='center'}
+confint(mlr_smoking_final, level = 0.95) %>%  
+  kable(caption="95% Confidence Interval",
+         digits = c(2, 2),
+         align = "l") %>%
+  kable_styling(position="center", full_width = T)
+```
+
+The final model can be written as: $$bwt.oz = \beta_0 +\beta_1 * smoke + \beta_2*mrace + \beta_3*mht + \beta_4*mpregwt + \beta_5*smoke*mrace + \epsilon_i;$$
+
+P-values from the summary table show that smoke, mht, mpregwt, difference between white and black are significant at the significant level of 0.05. The adjusted $R^2$ is 0.1421, meaning about 14.21% of the variance of birth weight can be explained by this model. \
+The coefficient of smoke is -9.56, which means that if mother is a smoker, then her baby's birth weight will decrease 9.56oz on average. The baseline for mom's race is 5(white), so compared with white mothers and keeping all other variables constant, average birth weight of mexican mothers' babies will be 0.19oz heavier, black mothers' babies' average birth weight will be 8.92oz lighter, asian mothers will have average 6.3oz lighter weight babies, and mix mothers will give birth to babies who are 0.77oz heavier on average. The coefficient of mht means that for every 1 inch increase in mom's height, her baby's weight tend to increase 0.93oz while the coefficient of mpregwt indicates that for every 1 pound increase in mom's pre-pregnancy weight, her baby's weight would increase 0.12oz. To interpret the interaction term, compared with non-smoking white mothers keeping other variables constant, the average birth weight from smoking mexican mothers would be 14.56oz heavier, from smoking black mothers will be 1.63oz heavier, from smoking asian mothers will be 6.55oz lighter and from smoking mixed-race mothers will be 12.38oz lighter. However, their p-values are larger than 0.05, and their confidence intervals contain 0, indicating they are not statistically significant. But we still include the interaction term in our model due to prior research interest. \
+The confidence interval of smoking is [-12.20, -6.93], indicating that we are 95% confident that the decrease of birth weight from a smoking mother will fall in this range. We are 95% certain that one unit increase of height will increase 0.42 - 1.44oz birth weight and one unit increase of pre-pregnancy weight will lead to 0.06-0.18oz increase in birth weight. We are also 95% confident that the average weight difference between white and black mother is between -12.83oz and -5.01oz and other factors of race can be interpreted similarly. Since null value is contained within the 95% confidence interval of smoke*mrace, it is not statistically significant. 
+
+**Model Assessment**
+
+From the plot of residuals vs fitted values, there is no discernible pattern and the points are scattered randomly, so linearity and independence of errors assumptions hold. The LOESS curve in residual plot is primarily a flat line around zero, so heteroscedasticity assumption is satisfied. The QQ plot indicates that normality assumption holds since most points are clustering around 45° line. The VIFs of all variables, including the interaction terms between smoking and race are less than 5 and the correlation between mom's height and pre-pregnancy weight is 0.46, so multicollinearity is not a big concern. 
+<br>
+<br>
+
+
+##### **Conclusion**
+
+**Findings: **
+From our final multi-linear regression model, we can conclude that smoking mother will give birth to babies with 9.56oz lower birth weight on average compared to non-smoking mothers. Besides smoking, mom's race, height, pre-pregnancy weight will also affect the baby's birth weight.  
+
+**Limitations: **
+Even though our model discovers some significant factors that will affect baby's birth weight, there are still some limitations in our model. \
+1. The adjusted $R^2$ value is pretty low, only about 14% of the variance in birth weight can be explained. 
+One potential reason is that we dropped some variables such as the height and weight of the father since these data are missing quite frequently. To improve our model, we should also incorporate some other predictors via survey or interview to better interpret the variation of pre-mature and birth weight. \
+2. The original dataset has about 15,000 rows while our dataset contains only 869 rows, which is a quite small subset of the original data. The conclusions drawn from this subset may not be able to capture the overall pattern of the entire data. So we could either investigate the original dataset(since it is not very huge) or perform permutation tests. \
+3. The dataset contains another response variable called gestation. We can build models using gestation as outcome variable to double check our existing model.
+
+
+
+
+\newpage
+
+##### **Appendix**
+
+##### **Question 1**
+**Check assumptions for SLR model regressing interval on duration**
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 12, fig.align = 'center'}
+par(mfrow = c(3,2))
+plot(lm_oldf_1, which = 1)
+plot(lm_oldf_1, which = 2)
+plot(lm_oldf_1, which = 3)
+plot(lm_oldf_1, which = 4)
+plot(lm_oldf_1, which = 5)
+```
+
+\newpage
+
+##### **Question 2**
+
+**Table 1**
+```{r echo = FALSE, message = FALSE}
+library(table1)
+table1(~ bwt.oz + mage + med+ mht + mpregwt + mrace_fac + inc_fac + parity_fac | smoke_fac, data = smoking,
+       render.continuous=c(.="N", .="Q1", .="Q3",.="Mean", .="SD", .="Median [Min, Max]"))
+
+```
+
+\newpage
+
+**Other plots of EDA**
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 8, fig.align = 'center'}
+# Explore birth weight and each predictor
+
+## Categorical variables
+## birth weight -- race
+gg7 <- ggplot(smoking, aes(x = mrace_fac, y = bwt.oz, fill = mrace_fac)) +
+  geom_boxplot() + 
+  geom_point(alpha = 0.2, color = "blue") +
+  scale_fill_brewer(palette = "Blues") +
+ # scale_fill_discrete(labels = c("white","mexican","black","asian","mix","unknown")) +
+  theme_classic() +
+  labs(title = "Birth weight -- mom race", x = "mom race", y = "Birth weight(oz)") +
+  theme(legend.position = 'none')
+
+
+## birth weight -- parity
+gg8 <- ggplot(smoking, aes(x = parity_fac, y = bwt.oz, fill = parity_fac)) +
+  geom_boxplot() + 
+  geom_point(alpha = 0.2, color = "blue") +
+  scale_fill_brewer(palette = "Blues") +
+  theme_classic() +
+  labs(title = "Birth weight -- mom parity", x = "mom parity", y = "Birth weight(oz)") +
+  theme(legend.position = 'none')
+
+## numeric variables
+gg9 <- ggplot(smoking, aes(x = mht, y = bwt.oz)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method  = "lm", color = "red") +
+  theme_classic() +
+  labs(title = "Birth weight -- mom height", x = "mom height", y = "Birth weight")
+
+gg10 <- ggplot(smoking, aes(x = mpregwt, y = bwt.oz)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method  = "lm", color = "red") +
+  theme_classic() +
+  labs(title = "Birth weight -- mom pre-pregnancy weight", x = "mom pre-pregnancy weight", y = "Birth weight")
+
+gg7 + gg8 + gg9 + gg10
+```
+
+\newpage
+
+**Check assumptions for MLR model regressing birth weight**
+```{r echo = FALSE, message = FALSE, include = FALSE}
+vif(mlr_smoking_final)
+```
+
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 12, fig.align = 'center'}
+# check assumptions
+par(mfrow = c(3, 2))
+plot(mlr_smoking_final, which = 1)
+plot(mlr_smoking_final, which = 2)
+plot(mlr_smoking_final, which = 3)
+plot(mlr_smoking_final, which = 4)
+plot(mlr_smoking_final, which = 5)
+#smoking_num <- smoking %>% select(c('mht', 'mpregwt'))
+#corrplot(cor(smoking_num), method = "number", type = "upper")
+
+```
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
+
+
+
