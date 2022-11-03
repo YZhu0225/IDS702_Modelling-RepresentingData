@@ -7,4 +7,4 @@ Assignment 1: [Single Linear Regression](https://github.com/YZhu0225/IDS702_Mode
 
 Assignment 2: [Multiple Linear Regression](https://github.com/YZhu0225/IDS702_Modelling_and_Representing_Data/tree/main/Multiple%20Linear%20Regression)
 
-Assignment 3: [Logistic Regression]
+Assignment 3: [Logistic Regression](https://github.com/YZhu0225/IDS702_Modelling_and_Representing_Data/tree/main/Logistic%20Regression)
