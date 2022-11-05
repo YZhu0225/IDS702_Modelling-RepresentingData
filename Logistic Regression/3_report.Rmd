@@ -1,0 +1,471 @@
+---
+title: "Data Analysis Assignment 3"
+author: "Yuanjing Zhu"
+date: "10/27/2022"
+---
+
+<style type="text/css">
+h1.title {
+  font-size: 16pt;
+}
+
+h3 { /* Header 3 */
+  font-size: 12pt;
+  color: Dark Blue;
+}
+
+body{
+font-size: 11pt;
+}
+</style>
+
+```{css, echo=FALSE}
+h1, h4 {
+  text-align: center;
+}
+```
+\pagenumbering{roman}
+
+```{r setup, include=FALSE} 
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r echo = FALSE, message = FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(brew)
+library(stargazer)
+library(patchwork)
+library(corrplot)
+library(caret)
+library(kableExtra)
+library(broom)
+library(car)
+library(leaps)
+library(MASS)
+library(gridExtra)
+library(pROC)
+library(PerformanceAnalytics)
+```
+
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+# Data
+nba <- read.csv('nba_games_stats.csv', header = 1, stringsAsFactors = TRUE)
+
+## clean and subset the data
+# Set factor variables
+nba$Home <- factor(nba$Home)
+nba$Team <- factor(nba$Team)
+nba$WINorLOSS <- factor(nba$WINorLOSS)
+# Convert date to the right format
+nba$Date <- as.Date(nba$Date, "%Y-%m-%d")
+# Also create a binary variable from WINorLOSS.
+# This is not always necessary but can be useful
+#particularly for R functions that prefer numeric binary variables
+#to the original factor variables
+nba$Win <- rep(0,nrow(nba))
+nba$Win[nba$WINorLOSS=="W"] <- 1
+nba$Win <- as.factor(nba$Win)
+
+# Charlotte hornets subset
+nba_reduced <- nba[nba$Team == "CHO", ]
+# Set aside the 2017/2018 season as your test data
+nba_reduced_train <- nba_reduced[nba_reduced$Date < "2017-10-01",]
+nba_reduced_test <- nba_reduced[nba_reduced$Date >= "2017-10-01",]
+
+dim(nba_reduced)
+head(nba_reduced)
+summary(nba_reduced)
+str(nba_reduced)
+```
+
+### Q1: Create plots to explore the relationships between Win and the following variables: Home, TeamPoints, FieldGoals. (with a period!), Assists, Steals, Blocks, OpponentPoints, TotalRebounds, and Turnovers. 
+```{r echo = FALSE, message = FALSE, fig.width = 12, fig.height = 10, fig.align = 'center'}
+# EDA
+## y: Win
+## x: Home, TeamPoints,FieldGoals. (with a period!), Assists, Steals, Blocks, OpponentPoints, TotalRebounds, and Turnovers
+
+# Win - Home
+gg1 <- ggplot(nba_reduced_train, aes(x=Win,fill=Home)) + geom_histogram(stat="count") +
+  labs(title="Home vs Win",
+       x="Win the game?",y="Number of team") +
+  theme_classic() +
+  theme(legend.position="top")
+  
+ # ggplot(nba_reduced_train, aes(Win, ..count..)) + geom_bar(aes(fill = Home), position = "dodge") + coord_flip() +
+  #labs(title="Home or away game vs Win the game",
+  #     x="Win the game?",y="Number of team") +
+#  theme_classic() +
+ # scale_fill_brewer(palette="Blues") 
+  #theme(legend.position="none")
+
+# Win - TeamPoints
+gg2 <- ggplot(nba_reduced_train,aes(x=Win, y=TeamPoints, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  labs(title="TeamPoints vs Win ",
+       x="Win the game?",y="Number of total points scored") +
+  stat_summary(fun.y="mean")+
+  theme_classic() +
+  scale_fill_brewer(palette="Blues") +
+  theme(legend.position="none")
+
+# Win - FieldGoals.
+gg3 <- ggplot(nba_reduced_train,aes(x=Win, y=FieldGoals., fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  scale_fill_brewer(palette="Blues") +
+  labs(title="FieldGoals. vs Win",
+       x="Win the game?",y="Number of field goals") +
+  theme_classic() + theme(legend.position="none")
+
+# Win - Assists
+gg4 <- ggplot(nba_reduced_train,aes(x=Win, y=Assists, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  labs(title="Assists vs Win",
+       x="Win the game?",y="Number of assists") +
+  theme_classic() +
+  scale_fill_brewer(palette="Blues") +
+  theme(legend.position="none")
+
+# Win - Steals
+gg5 <- ggplot(nba_reduced_train,aes(x=Win, y=Steals, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  scale_fill_brewer(palette="Blues") +
+  labs(title="Steals vs Win",
+       x="Win the game?",y="Nnumber of steals") +
+  theme_classic() + theme(legend.position="none")
+
+# Win - Blocks
+gg6 <- ggplot(nba_reduced_train,aes(x=Win, y=Blocks, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  labs(title="Blocks vs Win",
+       x="Win the game?",y="Number of blocks ") +
+  theme_classic() +
+  scale_fill_brewer(palette="Blues") +
+  theme(legend.position="none")
+
+# Win - OpponentPoints
+gg7 <- ggplot(nba_reduced_train,aes(x=Win, y=OpponentPoints, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  scale_fill_brewer(palette="Blues") +
+  labs(title="OpponentPoints vs Win",
+       x="Win the game?",y="Total points scored by the opposing team") +
+  theme_classic() + theme(legend.position="none")
+
+# Win - TotalRebounds
+gg8 <- ggplot(nba_reduced_train,aes(x=Win, y=TotalRebounds, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  labs(title="TotalRebounds vs Win  ",
+       x="Win the game?",y="Number of rebounds grabbed") +
+  theme_classic() +
+  scale_fill_brewer(palette="Blues") +
+  theme(legend.position="none")
+
+# Win - Turnovers
+gg9 <- ggplot(nba_reduced_train,aes(x=Win, y=Turnovers, fill=Win)) +
+  geom_boxplot() + coord_flip() +
+  stat_summary(fun.y="mean") +
+  scale_fill_brewer(palette="Blues") +
+  labs(title="Turnovers vs Win  ",
+       x="Win the game?",y="Total number of turnovers") +
+  theme_classic() + theme(legend.position="none")
+
+grid.arrange(gg1,gg2,gg3,gg4,gg5,gg6,gg7,gg8,gg9, nrow = 3)
+
+```
+
+For nba games by Charlotte Hornets teams before 2017-10-01:
+<br>
+From the bar plot of Home vs Win, we can see that the number of home team winning the game is larger than a visiting team and the number of away team losing is larger than a home team, which means that an nba team is more likely to win the game when it is the home team. From the boxplot of TeamPoints vs Win, we can see that a team scoring more points has higher chance to win. If a team scores more than 105 points, it has higher chance to win but if it scores less than 95 points, it is more likely to lose. Similar for FieldGoals.(with period), when a team has more field goals made in the game versus field goals attempted in the game, the frequency of winning is larger. The box plot of Assists and Win tells us that more assists made in the game leads to higher chance of winning the game, which maks sense since by definition assist means passing leading to a successful field goal. For steals and blocks, if a team has larger number of steals and blocks, it is more likely to win, but the difference is not very large. For OppoentPoints, it shows an opposite trend from TeamPoints where more points opponent team made, more likely the team would lose. For total number of rebounds vs win, a team is more likely to win it it has larger number of rebounds. Total number of turnovers does not seem to have an impact on the odds of winning the game from the last box plot.
+
+<br>
+
+### Q2： Identify at least two pairs and briefly explain why we should not include them in the model at the same time.
+```{r echo = FALSE, message = FALSE, result = "hide"}
+
+#potential_corr_cols <- c("TeamPoints","FieldGoals", "FieldGoalsAttempted", "FieldGoals.", "OffRebounds", "TotalRebounds")
+
+#chart.Correlation(nba_reduced_train[, potential_corr_cols], histogram=TRUE)
+
+```
+
+1. TeamPoints and FieldGoals
+<br>
+2. FieldGoals and FieldGoals.(with period)
+<br>
+3. OffRebounds and TotalRebounds
+
+By looking at the code book, the first pair I identified is TeamPoints and FieldGoals. This is because total points equal the sum of number of goals multiply points of each goal. The more field goals made in the game will result in higher total points scored, so they should not be included in the model simultaneously to avoid multicolinearity. 
+
+By definition, FieldGoals, FieldGoals.(with period) and FieldGoalsAttempted should not be included together because there is inherent connection between these three: $FieldGoals. = FieldGoals / FieldGoalsAttempted$. Variation in FieldGoals will affect the value of FieldGoals.(with period). 
+
+Similar as OffRebounds and TotalRebounds since TotalRebounds includes OffRebounds, i.e. the increasing in OffRebounds will result in an increase in TotalRebounds.  
+
+<br>
+
+### Q3： Fit a logistic regression model for Win using Home, TeamPoints, FieldGoals., Assists, Steals, Blocks, TotalRebounds, and Turnovers as predictors. Present the output of the fitted model and interpret the significant coefficients in terms of the odds of your team winning an NBA game.
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+nba_reduced_train$FieldGoals._percent <- nba_reduced_train$FieldGoals. * 100
+nbareg1 <- glm(Win ~ Home + TeamPoints + FieldGoals._percent + Assists + Steals + Blocks + TotalRebounds + Turnovers, data = nba_reduced_train, family = binomial)
+summary(nbareg1)
+
+```
+```{r,echo = FALSE, message = FALSE, fig.align='center'}
+nbareg1 %>%
+  tidy() %>% 
+  kable(caption = "Logistic regression Model Regressing Win",
+        col.names = c("Predictor", "Estimate", "SE", "z value", "p-value"),
+        digits = c(2, 2, 2, 2, 2),
+        align = "l") %>% 
+  add_footnote(c("Null deviance: 340.44","Residual deviance: 195.38","AIC: 213.38"))%>% 
+  kable_styling(position="center", full_width = T)
+```
+
+```{r echo = FALSE, message = FALSE, fig.align = 'center'}
+conf_nba <- exp(confint(nbareg1))
+conf_nba_df <- data.frame(conf_nba)
+rownames(conf_nba_df) <- NULL
+Predictor <- c("Intercept", "Home","TeamPoints", "FieldGoals._percent", "Assists", "Steals", "Blocks", "TotalRebounds", "Turnovers")
+cbind(data.frame(Predictor), conf_nba_df) %>%
+  kable( caption="<center>95% Confidence Interval</center>",
+         bookstabs = T,
+         col.names = c("Predictor", "2.5%", "97.5%"),
+         digits = c(2, 2),
+         align = "l") %>%
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+
+```
+Note: the FieldGoals.is coded in the data as a decimal, I converted it to percent prior to fitting the model.
+
+According to p-value, Home, FieldGoals.(%), Assists, Steals, TotalRebounds and Turnovers are considered significant predictors in regressing winning the game at the 0.05 level. Here is the interpretation of significant coefficients:
+
+Odds of winning the game are 3 ($e^{1.11}$) times higher for home team compared to away team and we are 95% confident that the true odds ratio comparing home and away team lies between 1.39 and 6.81. 
+
+For every one percent increase in the ratio of number of field goals made in the game and the number of field goals attempted in the game, the odds of winning increase by a factor of 1.55 ($e^{0.44}$), and we are 95% confident that the true odds ratio lies between 1.35 and 1.82. 
+
+For every one unit increase in the number of assists, the odds of winning will decrease 10% ($e^{-0.11} = 0.9$) and we are 95% confident that the true odds ratio lies between 0.81 and 0.99. 
+
+For every one unit increase in the number of steals, the odds of winning will increase by a factor of 1.48 ($e^{0.39}$) and we are 95% confident that true odds ratio lies between 1.27 and 1.76. 
+
+For every one unit increase in total number of rebound, the odds of winning will increase by a factor of 1.32 ($e^{0.28}$) and we are 95% confident that true odds ratio lies between 1.22 and 1.45.
+
+For every one unit increase in turnover, the odds of winning will decrease 16% ($e^{-0.17} = 0.84$) and we are 95% confident that true odds ratio lies between 0.75 and 0.94.
+
+
+<br>
+
+### Q4: Are there are any concerns regarding multicollinearity in this model?
+
+```{r echo = FALSE, message = FALSE, results = 'asis'}
+vif_nba <- vif(nbareg1)
+stargazer(vif_nba, type = 'html', out = 'vif_nba.html')
+```
+
+<br>
+
+From the VIF table, we can see that vif values for all predictors are less than 5, so multicollinearity is not a big concern in this model.
+
+<br>
+
+### Q5: Using 0.5 as your cutoff for predicting wins or losses (1 vs 0) from the predicted probabilities, what is the accuracy of this model? Show the ROC curve and give the AUC.
+
+```{r echo = FALSE, message = FALSE, results='hide'}
+confusionMatrix(as.factor(ifelse(fitted(nbareg1) >= 0.5, "1","0")), nba_reduced_train$Win,positive = "1")
+```
+
+```{r echo = FALSE, message = FALSE,results = FALSE, fig.width = 5, fig.height = 4, fig.align = 'center'}
+roc(nba_reduced_train$Win, fitted(nbareg1), print.thres=0.5, print.auc=T, plot=T,legacy.axes=T)
+
+```
+Using 0.5 as cutoff predicting wins and losses, the accuracy of this model is 81.3%. From the ROC curve, we can see that the auc score is 0.897. It's close to 1, indicating our model has good performance. 
+
+<br>
+
+### Q6: Now add Opp.FieldGoals., Opp.TotalRebounds, Opp.TotalFouls, and Opp.Turnovers as predictors to the previous model. Interpret coefficients for significant terms, if any.
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+nba_reduced_train$Opp.FieldGoals._percent <- nba_reduced_train$Opp.FieldGoals. * 100
+nbareg2 <- glm(Win ~ Home + TeamPoints + FieldGoals._percent + Assists + Steals + Blocks + TotalRebounds + Turnovers + Opp.FieldGoals._percent + Opp.TotalRebounds + Opp.TotalFouls + Opp.Turnovers, data = nba_reduced_train, family = binomial)
+summary(nbareg2)
+```
+
+The result tables including point estimate, standard error, z-value, p-value and confidence intervals are in the appendix for reference. 
+
+The p-value for each predictor indicates that Home, TeamPoints, FieldGoals.(%), Turnovers, Opp.FieldGoals., Opp.TotalRebounds, and Opp.Turnovers	are statistically significant at the level of 0.05. Here are the interpretations.
+
+Odds of winning the game are 4.6 ($e^{1.53}$) times higher for home team compared to away team and we are 95% confident that the true odds ratio comparing home and away team lies between 1.3 and 19.3. 
+
+For every one unit increase in the number of total points scored in the game, the odds of winning will increase by a factor of 1.15 ($e^{0.14}$) and we are 95% confident that true odds ratio lies between 1.03 and 1.32.
+
+For every one percent increase in the ratio of number of field goals made in the game and the number of field goals attempted in the game, the odds of winning increase by a factor of 1.49 ($e^{0.4}$),and we are 95% confident that the true odds ratio lies between 1.13 and 2.1. 
+
+For every one unit increase in the total number of turnover, the odds of winning will decrease by 42% ($e^{-0.55} = 0.58$) and we are 95% confident that the true odds ratio lies between 0.44 and 0.72. 
+
+For every one percent increase in the ratio of number of field goals made by the opposing team in the game and the number of field goals attempted by the opposing team in the game, the odds of winning decrease by 58% ($e^{-0.86} = 0.42$), and we are 95% confident that the true odds ratio of is between 0.29 and 0.56.
+
+For every one unit increase in the number of rebounds grabbed by the opposing team, the odds of winning will decrease by 30% ($e^{-0.36} = 0.7$) and we are 95% confident that the true odds ratio lies between 0.57 and 0.82. 
+
+For every one unit increase in the number of opponent's turnovers, the odds of winning will increase by a factor of 1.84 ($e^{0.61}$) and we are 95% confident that true odds ratio lies between 1.38 and 2.64. 
+
+<br>
+
+### Q7: What is the accuracy of this new model? Show the ROC curve and give the AUC. Which model better predicts the odds of winning?
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+confusionMatrix(as.factor(ifelse(fitted(nbareg2) >= 0.5, "1","0")), nba_reduced_train$Win,positive = "1")
+```
+```{r echo = FALSE, message = FALSE, results = FALSE, fig.width = 5, fig.height = 4, fig.align = 'center'}
+
+roc(nba_reduced_train$Win, fitted(nbareg2), print.thres=0.5, print.auc=T, plot=T,legacy.axes=T)
+
+```
+
+The accuracy of this model was increased to 92.68% and the roc-auc score was also improved to 0.983. In terms of sensitivity, the new mode can predict 92.31% of teams who won the game, while the prior model can only detect 80.31%. Specificity also increased from 82.17% to 93.02%, which means the new model has better chance to correctly predict the team who lose the game. Based on roc-auc socre, sensitivity, specificity, the new model better predicts the odds of winning.
+<br>
+
+### Q8: Use the model that you selected in question 7 to predict out-of-sample probabilities for the nba_reduced_test data. Using 0.5 as your cutoff for predicting wins or losses (1 vs 0) from the out-of-sample predicted probabilities, what is the out-of-sample accuracy? How well does your model do in predicting data for the 2017/2018 season?
+
+```{r echo = FALSE, message = FALSE, results = 'hide', fig.show='hide'}
+nba_reduced_test$FieldGoals._percent <- nba_reduced_test$FieldGoals. * 100
+nba_reduced_test$Opp.FieldGoals._percent <- nba_reduced_test$Opp.FieldGoals. * 100
+
+nba_test_predict <- predict(nbareg2, nba_reduced_test, type = "response")
+
+confusionMatrix(as.factor(ifelse(nba_test_predict >= 0.5, "1","0")), nba_reduced_test$Win,positive = "1")
+
+roc(nba_reduced_test$Win, nba_test_predict, print.thres=0.5, print.auc=T, plot=T,legacy.axes=T)
+```
+
+Using the improved model to predict whether teams in the test set will win the game for the 2017/2018 season and comparing with the true results, our model achieved 86.59% out-of-sample accuracy. From the ROC curve (in appendix), the roc-auc score is 0.984 (very close to 1), which means that our model can predict winning very well. The sensitivity is 0.9444 indicating our model can identify 94.44% of those teams who won the game. The specificity is 0.8043, meaning 80.43% of teams losing the game can be predicted correctly by this model.
+
+<br>
+
+### Q9: Using the change in deviance test, test whether including Opp.Assists and Opp.Blocks in the model at the same time would improve the model. Is there any other variable in this dataset which we did not consider that you think might improve our model? Which one and why?
+
+```{r echo = FALSE, message = FALSE, results = 'hide'}
+nbareg3 <- glm(Win ~ Home + TeamPoints + FieldGoals._percent + Assists + Steals + Blocks + TotalRebounds + Turnovers + Opp.FieldGoals._percent + Opp.TotalRebounds + Opp.TotalFouls + Opp.Turnovers + Opp.Assists + Opp.Blocks, data = nba_reduced_train, family = binomial)
+
+anova(nbareg2, nbareg3, test = "Chisq")
+
+nba_test_predict <- predict(nbareg3, nba_reduced_test, type = "response")
+
+confusionMatrix(as.factor(ifelse(nba_test_predict >= 0.5, "1","0")), nba_reduced_test$Win,positive = "1")
+
+```
+
+Here I performed a chi-squared test between two models with and without Opp.Assists and Opp.Blocks. The p-value is 0.46, which means the added predictors are not statistically significant. However, after I calculated the confusion matrix, the accuracy of the model including Opp.Assists and Opp.Blocks is increased from 86.59% to 89.02%. Therefore, including these two predictors did improve the model.
+
+```{r echo = FALSE, message = FALSE, results = 'hide', fig.show='hide'}
+# add Opp.3PointShots.
+nba_reduced_train$Opp.3PointShots._percent <- nba_reduced_train$Opp.3PointShots. * 100
+nbareg4 <- glm(Win ~ Home + TeamPoints + FieldGoals._percent + Assists + Steals + Blocks + TotalRebounds + Turnovers + Opp.FieldGoals._percent + Opp.TotalRebounds + Opp.TotalFouls + Opp.Turnovers + Opp.3PointShots._percent, data = nba_reduced_train, family = binomial)
+summary(nbareg4)
+# Deviance
+anova(nbareg2, nbareg4, test = "Chisq")
+# roc-auc
+roc(nba_reduced_train$Win, fitted(nbareg4), print.thres=0.5, print.auc=T, plot=T,legacy.axes=T)
+```
+
+Then I added another variable: Opp.X3PointShots.(with period). I chose this variable because it logically makes sense that if a team's opposing team has higher chance shooting 3-point goal, the smaller chance this team will win. To test whether it is a significant variable, first I fitted a logistic regression model with Opp.X3PointShots. added. The p-value is extremely small, indicating the variable is statistically significant. From the result table in the appendix, the coefficient of Opp.X3PointShots. indicates that one percent increase in the ratio of number of 3 point shots made by the opposing team and number of 3 point shots attempted by the opposing team, the odds of winning will decrease by 16% ($e^{-0.17} = 0.84$). Then I conducted chi-sqaure test between the 2 models with and without Opp.X3PointShots. and the p-value indicates that there is significant difference between the two models. Finally, I plotted the roc curve (in appendix) and obtained the auc score. The auc score of the model with Opp.X3PointShot. is 0.989, which is higher than the previous one. So adding Opp.X3PointShot.(with period) could improve our logistic regression model.
+
+<br>
+
+### Q10: What do you conclude from this analysis?
+
+1. According to the coefficients of our logistic regression model, predictor "Home" also has the greatest impact on whether a team will win. If a team is a guest team, it may suffer from real-life disadvantages such as time zone changes, tough travel, unfamiliarity of field as well as psychological factors, which will much lower the chance of winning the game.
+
+2. FieldGoals., Opp.FieldGoals., and turnovers are also significant in affecting team winning or losing, so coach should work on these fields to increase the odds of winning. For example, coaches can focus on training methods for improving basketball shooting proficiency and tell players to put more effort in attempting to stop the opposition from scoring. Coaches should also try to figure out ways to reduce turnovers, such as practicing footwork, using passing drills with fast moving targets, etc. 
+
+
+
+\newpage
+
+### Appendix
+**Q6 Result table after adding Opp.FieldGoals., Opp.TotalRebounds, Opp.TotalFouls, and Opp.Turnovers **
+```{r,echo = FALSE, message = FALSE, fig.align='center'}
+nbareg2 %>%
+  tidy() %>% 
+  kable(caption = "Logistic regression Model2 Regressing Win",
+        col.names = c("Predictor", "Estimate", "SE", "z value", "p-value"),
+        digits = c(2, 2, 2, 2, 2),
+        align = "l") %>% 
+  add_footnote(c("Null deviance: 340.44","Residual deviance: 66.263","AIC: 94.263"))%>% 
+  kable_styling(position="center", full_width = T)
+```
+```{r echo = FALSE, message = FALSE, fig.align = 'center'}
+conf_nba2 <- exp(confint(nbareg2))
+conf_nba_df2 <- data.frame(conf_nba2)
+rownames(conf_nba_df2) <- NULL
+Predictor <- c("Intercept", "Home","TeamPoints", "FieldGoals.", "Assists", "Steals", "Blocks", "TotalRebounds", "Turnovers", "Opp.FieldGoals.", "Opp.TotalRebounds", "Opp.TotalFouls", "Opp.Turnovers")
+cbind(data.frame(Predictor), conf_nba_df2) %>%
+  kable( caption="<center>95% Confidence Interval</center>",
+         bookstabs = T,
+         col.names = c("Predictor", "2.5%", "97.5%"),
+         digits = c(2, 2),
+         align = "l") %>%
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+
+```
+
+**Q8 ROC curve in predicting data for the 2017/2018 season **
+```{r echo = FALSE, message = FALSE, results = 'hide', fig.width = 5, fig.height = 4, fig.align = 'center'}
+nba_test_predict <- predict(nbareg2, nba_reduced_test, type = "response")
+confusionMatrix(as.factor(ifelse(nba_test_predict >= 0.5, "1","0")), nba_reduced_test$Win,positive = "1")
+roc(nba_reduced_test$Win, nba_test_predict, print.thres=0.5, print.auc=T, plot=T,legacy.axes=T)
+```
+
+
+**Q9 Result table after adding Opp.3PointShots.  **
+```{r,echo = FALSE, message = FALSE, fig.align='center'}
+nbareg4 %>%
+  tidy() %>% 
+  kable(caption = "Logistic regression Model4 Regressing Win",
+        col.names = c("Predictor", "Estimate", "SE", "z value", "p-value"),
+        digits = c(2, 2, 2, 2, 2),
+        align = "l") %>% 
+  add_footnote(c("Null deviance: 340.44","Residual deviance: 82.323","AIC: 108.32"))%>% 
+  kable_styling(position="center", full_width = T)
+```
+```{r echo = FALSE, message = FALSE, fig.align = 'center'}
+conf_nba4 <- exp(confint(nbareg4))
+conf_nba_df4 <- data.frame(conf_nba4)
+rownames(conf_nba_df4) <- NULL
+Predictor <- c("Intercept", "Home","TeamPoints", "FieldGoals.", "Assists", "Steals", "Blocks", "TotalRebounds", "Turnovers", "Opp.FieldGoals.", "Opp.TotalRebounds", "Opp.TotalFouls", "Opp.Turnovers", "Opp.3PointShots.")
+cbind(data.frame(Predictor), conf_nba_df4) %>%
+  kable( caption="<center>95% Confidence Interval</center>",
+         bookstabs = T,
+         col.names = c("Predictor", "2.5%", "97.5%"),
+         digits = c(2, 2),
+         align = "l") %>%
+  kable_styling(position="center") %>%
+  kable_styling(full_width = T)
+```
+
+
+
+**Q9 ROC curve after adding new variable: Opp.3PointShots.  **
+```{r echo = FALSE, message = FALSE, results = 'hide', fig.width = 5, fig.height = 4, fig.align = 'center'}
+# add Opp.3PointShots.
+nbareg4 <- glm(Win ~ Home + TeamPoints + FieldGoals. + Assists + Steals + Blocks + TotalRebounds + Turnovers + Opp.FieldGoals. + Opp.TotalRebounds + Opp.TotalFouls + Opp.Turnovers + Opp.3PointShots., data = nba_reduced_train, family = binomial)
+summary(nbareg4)
+# Deviance
+anova(nbareg2, nbareg4, test = "Chisq")
+# roc-auc
+roc(nba_reduced_train$Win, fitted(nbareg4), print.thres=0.5, print.auc=T, plot=T,legacy.axes=T)
+```
+
+
+
+\newpage
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
