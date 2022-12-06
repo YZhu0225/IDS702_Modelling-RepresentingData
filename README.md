@@ -9,4 +9,6 @@ Assignment 2: [Multiple Linear Regression](https://github.com/YZhu0225/IDS702_Mo
 
 Assignment 3: [Logistic Regression](https://github.com/YZhu0225/IDS702_Modelling_and_Representing_Data/tree/main/Logistic%20Regression)
 
-Assignment 4: [Generalized Linear Regression]
+Assignment 4: [Generalized Linear Regression](https://github.com/YZhu0225/IDS702_Modelling_and_Representing_Data/tree/main/Generalized%20Linear%20Regression)
+
+Final Project: [Environmental-Research-Analysis-of-Worldwide-Carbon-Emission-Contributions](https://github.com/YZhu0225/Environmental-Research-Analysis-of-Worldwide-Carbon-Emission-Contributions)
